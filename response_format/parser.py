@@ -25,6 +25,14 @@ def parse_content_to_json(content: str) -> tuple[str, dict]:
     action_match = PATTERN.search(content)
     if action_match is not None:
         json_text, json_object = _try_parse_json_object(action_match.group(1).strip())
+    else:
+        # 如果没有匹配到特定的字符开头，尝试直接对齐进行解码
+        try:
+            json_object = json.loads(content)
+            json_text = content
+        except json.JSONDecodeError:
+            return json_text, json_object
+
     return json_text, json_object
 
 
